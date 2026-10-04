@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A polished, interactive starter for your next GitHub Pages website."
+    />
+    <meta name="theme-color" content="#f4f0e7" />
+    <title>Northstar — Interactive web starter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href="#top" aria-label="Northstar home">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span>Northstar</span>
+      </a>
+
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span class="sr-only">Open navigation</span>
+        <span></span><span></span>
+      </button>
+
+      <nav class="site-nav" id="site-nav" aria-label="Main navigation">
+        <a href="#work">Work</a>
+        <a href="#approach">Approach</a>
+        <a href="#contact">Contact</a>
+      </nav>
+
+      <button class="theme-toggle" type="button" aria-label="Switch to dark theme">
+        <span class="theme-icon" aria-hidden="true">◐</span>
+        <span class="theme-label">Dark</span>
+      </button>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy reveal">
+          <p class="eyebrow"><span></span> Independent digital studio</p>
+          <h1 id="hero-title">Small sites.<br /><em>Big presence.</em></h1>
+          <p class="hero-intro">
+            A flexible starting point for ideas that deserve a sharp, fast, and memorable home on the web.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#work">Explore the layout <span aria-hidden="true">↘</span></a>
+            <a class="text-link" href="#contact">Start a conversation <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="Interactive design dial">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <button class="dial" type="button" aria-label="Change accent color">
+            <span class="dial-number">01</span>
+            <span class="dial-label">Click to<br />shift energy</span>
+            <span class="dial-arrow" aria-hidden="true">↗</span>
+          </button>
+          <p class="visual-note">Built to be<br />made your own.</p>
+        </div>
+      </section>
+
+      <section class="marquee" aria-label="Site qualities">
+        <div class="marquee-track">
+          <span>Responsive by default</span><i>✦</i><span>No build step</span><i>✦</i><span>Accessible interactions</span><i>✦</i>
+          <span aria-hidden="true">Responsive by default</span><i aria-hidden="true">✦</i><span aria-hidden="true">No build step</span><i aria-hidden="true">✦</i><span aria-hidden="true">Accessible interactions</span><i aria-hidden="true">✦</i>
+        </div>
+      </section>
+
+      <section class="work section-shell" id="work" aria-labelledby="work-title">
+        <div class="section-heading reveal">
+          <p class="section-number">01 / Selected directions</p>
+          <h2 id="work-title">A system with room<br />for your story.</h2>
+          <p>Swap the words, colors, and modules. The structure is already doing the heavy lifting.</p>
+        </div>
+
+        <div class="showcase-grid">
+          <article class="project project-featured reveal">
+            <div class="project-art art-one" aria-hidden="true">
+              <span class="art-label">Your flagship idea</span>
+              <div class="poster-copy">FORM<br />MEETS<br /><em>FEELING</em></div>
+              <div class="poster-dot"></div>
+            </div>
+            <div class="project-meta">
+              <h3>Lead with impact</h3>
+              <p>A generous featured space for the project, product, or thought that matters most.</p>
+            </div>
+          </article>
+
+          <article class="project reveal">
+            <div class="project-art art-two" aria-hidden="true">
+              <span class="signal signal-a"></span><span class="signal signal-b"></span><span class="signal signal-c"></span>
+              <p>Make<br />waves.</p>
+            </div>
+            <div class="project-meta">
+              <h3>Show, don’t just tell</h3>
+              <p>Strong compositions turn even placeholder content into a clear visual direction.</p>
+            </div>
+          </article>
+
+          <article class="project reveal">
+            <div class="project-art art-three" aria-hidden="true">
+              <div class="type-stack"><span>IDEAS</span><span>INTO</span><span>MOTION</span></div>
+              <span class="corner-mark">↳</span>
+            </div>
+            <div class="project-meta">
+              <h3>Keep it moving</h3>
+              <p>Subtle transitions and hover states create energy without getting in the way.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="approach section-shell" id="approach" aria-labelledby="approach-title">
+        <div class="approach-intro reveal">
+          <p class="section-number">02 / The foundation</p>
+          <h2 id="approach-title">Simple on purpose.<br /><em>Ready for more.</em></h2>
+        </div>
+        <ol class="principles">
+          <li class="reveal">
+            <span class="principle-number">01</span>
+            <div><h3>Edit with confidence</h3><p>Plain HTML, CSS, and JavaScript keep the project approachable and portable.</p></div>
+          </li>
+          <li class="reveal">
+            <span class="principle-number">02</span>
+            <div><h3>Publish automatically</h3><p>Push to the main branch and GitHub Actions handles the deployment.</p></div>
+          </li>
+          <li class="reveal">
+            <span class="principle-number">03</span>
+            <div><h3>Grow when needed</h3><p>Add pages, connect a CMS, or migrate to a framework when the idea earns it.</p></div>
+          </li>
+        </ol>
+      </section>
+
+      <section class="contact section-shell" id="contact" aria-labelledby="contact-title">
+        <p class="section-number reveal">03 / Your next move</p>
+        <div class="contact-layout">
+          <h2 id="contact-title" class="reveal">Have an idea?<br /><em>Give it a place.</em></h2>
+          <div class="contact-copy reveal">
+            <p>This starter is ready for your voice. Begin by replacing the name, copy, and contact details—then make it unmistakably yours.</p>
+            <a class="button button-light" href="mailto:hello@example.com">hello@example.com <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="contact-orbit" aria-hidden="true"></div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="#top"><span class="brand-mark" aria-hidden="true">✦</span><span>Northstar</span></a>
+      <p>Designed for the open web. <span id="current-year"></span></p>
+      <a href="#top">Back to top ↑</a>
+    </footer>
+  </body>
+</html>
