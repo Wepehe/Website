@@ -3,13 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Something new is taking shape. Coming soon." />
-    <meta name="theme-color" content="#d8d3c9" />
+    <meta name="description" content="Coming soon." />
+    <meta name="theme-color" content="#000000" />
     <title>Coming Soon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="styles.css" />
@@ -17,52 +17,22 @@
   </head>
   <body>
     <main class="stage">
-      <header class="masthead">
-        <a class="wordmark" href="./" aria-label="Home">N / 01</a>
-        <p>Independent project<br />in development</p>
-        <p class="status"><span aria-hidden="true"></span> In progress</p>
-      </header>
-
+      <h1 class="sr-only">Coming Soon</h1>
       <div class="light-beam" aria-hidden="true"></div>
-      <div class="light-source" aria-hidden="true"></div>
-
-      <section class="hero" aria-labelledby="page-title">
-        <div class="intro">
-          <p class="kicker">A new form is emerging</p>
-          <h1 id="page-title">Coming<br />soon.</h1>
-        </div>
-
-        <div class="cube-stage">
-          <div class="cube-wrap">
-            <button
-              class="cube-control"
-              type="button"
-              aria-label="Pause cube rotation"
-              aria-pressed="false"
-            >
-              <span class="sr-only">Toggle cube rotation</span>
-              <span class="cube" aria-hidden="true">
-                <span class="cube-face cube-front"><b>Coming</b><b>Soon</b><i>01</i></span>
-                <span class="cube-face cube-back"><b>Coming</b><b>Soon</b><i>02</i></span>
-                <span class="cube-face cube-right"><b>Coming</b><b>Soon</b><i>03</i></span>
-                <span class="cube-face cube-left"><b>Coming</b><b>Soon</b><i>04</i></span>
-                <span class="cube-face cube-top"><b>Coming</b><b>Soon</b><i>05</i></span>
-                <span class="cube-face cube-bottom"><b>Coming</b><b>Soon</b><i>06</i></span>
-              </span>
-            </button>
-          </div>
-          <div class="floor-shadow" aria-hidden="true"></div>
-          <p class="interaction-note">Click the cube to pause</p>
-        </div>
-
-        <p class="side-note">Stay close.<br />We are almost ready.</p>
-      </section>
-
-      <footer class="footer">
-        <p>&copy; <span id="year"></span></p>
-        <p>Toronto / Canada</p>
-        <a href="mailto:hello@example.com">hello@example.com</a>
-      </footer>
+      <button
+        class="cube-control"
+        type="button"
+        aria-label="Rotating cube. Drag to rotate it manually."
+      >
+        <span class="cube" aria-hidden="true">
+          <span class="cube-face cube-front"><span>Coming<br />Soon</span></span>
+          <span class="cube-face cube-back"></span>
+          <span class="cube-face cube-right"></span>
+          <span class="cube-face cube-left"></span>
+          <span class="cube-face cube-top"></span>
+          <span class="cube-face cube-bottom"></span>
+        </span>
+      </button>
     </main>
   </body>
 </html>
