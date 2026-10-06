@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 
 const stage = document.querySelector('.stage');
@@ -39,31 +38,23 @@ scene.background = new THREE.Color(0x000000);
 const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
 camera.position.set(0, 0.2, 7.4);
 
-const pmremGenerator = new THREE.PMREMGenerator(renderer);
-const roomEnvironment = new RoomEnvironment();
-const environmentTarget = pmremGenerator.fromScene(roomEnvironment, 0.04);
-scene.environment = environmentTarget.texture;
-roomEnvironment.dispose();
-pmremGenerator.dispose();
-
 const cubeGroup = new THREE.Group();
 cubeGroup.rotation.order = 'YXZ';
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
   color: 0x030303,
-  roughness: 0.13,
+  roughness: 0.08,
   metalness: 0,
-  transmission: 0.2,
-  thickness: 1.5,
+  transmission: 0.58,
+  thickness: 1,
   ior: 1.5,
-  attenuationColor: new THREE.Color(0x010101),
-  attenuationDistance: 0.65,
-  clearcoat: 0.5,
-  clearcoatRoughness: 0.08,
+  attenuationColor: new THREE.Color(0x090909),
+  attenuationDistance: 2.6,
+  clearcoat: 0.32,
+  clearcoatRoughness: 0.06,
   specularIntensity: 1,
   specularColor: new THREE.Color(0xffffff),
-  envMapIntensity: 0.42,
 });
 
 const cubeGeometry = new RoundedBoxGeometry(2.4, 2.4, 2.4, 8, 0.055);
@@ -102,18 +93,14 @@ label.position.z = 1.23;
 label.renderOrder = 2;
 cubeGroup.add(label);
 
-const spotLight = new THREE.SpotLight(0xfff4e8, 900, 15, Math.PI * 0.19, 0.62, 2);
-spotLight.position.set(0, 5.2, 2.8);
+const spotLight = new THREE.SpotLight(0xfff4e8, 1200, 15, Math.PI * 0.2, 0.68, 2);
+spotLight.position.set(0, 5.4, 1.5);
 spotLight.castShadow = true;
 spotLight.shadow.mapSize.set(2048, 2048);
 spotLight.shadow.bias = -0.00015;
 spotLight.shadow.normalBias = 0.025;
 spotLight.target.position.set(0, 0, 0);
 scene.add(spotLight, spotLight.target);
-
-const topFill = new THREE.PointLight(0xdde7ff, 22, 10, 2);
-topFill.position.set(-2.2, 3.5, 1.2);
-scene.add(topFill);
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();

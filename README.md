@@ -5,8 +5,8 @@ A minimal WebGL teaser featuring a physically lit black-glass cube.
 ## Rendering
 
 - Three.js `0.186.1` renders the scene directly in WebGL.
-- A physically based glass material uses 20% light transmission to approximate 80% opaque black glass.
-- A real overhead spotlight creates highlights and shadows that respond as the cube rotates.
+- A physically based black-glass material uses 58% light transmission, refractive thickness, and dark attenuation.
+- One overhead spotlight is the scene's only light source, so every highlight responds consistently as the cube rotates.
 - The front-face label is a high-resolution canvas texture layered onto the glass.
 
 ## Interaction
