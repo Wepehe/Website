@@ -8,31 +8,29 @@
     <title>Coming Soon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="styles.css?v=20261006-2" />
-    <script src="script.js?v=20261006-2" defer></script>
+    <link rel="stylesheet" href="styles.css?v=20261006-webgl2" />
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://cdn.jsdelivr.net/npm/three@0.186.1/build/three.module.js",
+          "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.186.1/examples/jsm/"
+        }
+      }
+    </script>
+    <script type="module" src="script.js?v=20261006-webgl2"></script>
   </head>
   <body>
-    <main class="stage">
+    <main
+      class="stage"
+      tabindex="0"
+      aria-label="A slowly rotating black glass cube. Drag to rotate it manually."
+    >
       <h1 class="sr-only">Coming Soon</h1>
-      <div class="light-beam" aria-hidden="true"></div>
-      <button
-        class="cube-control"
-        type="button"
-        aria-label="Rotating cube. Drag to rotate it manually."
-      >
-        <span class="cube" aria-hidden="true">
-          <span class="cube-face cube-front"><span>Coming<br />Soon</span></span>
-          <span class="cube-face cube-back"></span>
-          <span class="cube-face cube-right"></span>
-          <span class="cube-face cube-left"></span>
-          <span class="cube-face cube-top"></span>
-          <span class="cube-face cube-bottom"></span>
-        </span>
-      </button>
     </main>
   </body>
 </html>
