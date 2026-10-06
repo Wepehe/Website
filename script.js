@@ -43,16 +43,16 @@ cubeGroup.rotation.order = 'YXZ';
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0x030303,
-  roughness: 0.08,
+  color: 0x111111,
+  roughness: 0.035,
   metalness: 0,
-  transmission: 0.58,
-  thickness: 1,
-  ior: 1.5,
-  attenuationColor: new THREE.Color(0x090909),
-  attenuationDistance: 2.6,
-  clearcoat: 0.32,
-  clearcoatRoughness: 0.06,
+  transmission: 0.94,
+  thickness: 0.7,
+  ior: 1.52,
+  attenuationColor: new THREE.Color(0x202020),
+  attenuationDistance: 5,
+  clearcoat: 0.18,
+  clearcoatRoughness: 0.025,
   specularIntensity: 1,
   specularColor: new THREE.Color(0xffffff),
 });
@@ -102,9 +102,6 @@ spotLight.shadow.normalBias = 0.025;
 spotLight.target.position.set(0, 0, 0);
 scene.add(spotLight, spotLight.target);
 
-const raycaster = new THREE.Raycaster();
-const pointer = new THREE.Vector2();
-
 let mode = reduceMotion ? 'manual' : 'auto';
 let pitch = BASE_PITCH;
 let yaw = INITIAL_YAW;
@@ -126,18 +123,6 @@ const shortestAngle = (angle) => ((angle + Math.PI) % (Math.PI * 2) + Math.PI * 
 const easeInOutCubic = (value) => value < 0.5
   ? 4 * value * value * value
   : 1 - Math.pow(-2 * value + 2, 3) / 2;
-
-function setPointerPosition(event) {
-  const bounds = renderer.domElement.getBoundingClientRect();
-  pointer.x = ((event.clientX - bounds.left) / bounds.width) * 2 - 1;
-  pointer.y = -((event.clientY - bounds.top) / bounds.height) * 2 + 1;
-}
-
-function pointerHitsCube(event) {
-  setPointerPosition(event);
-  raycaster.setFromCamera(pointer, camera);
-  return raycaster.intersectObject(cubeBody, false).length > 0;
-}
 
 function beginReturn() {
   if (mode === 'dragging' || reduceMotion) return;
@@ -171,8 +156,6 @@ function finishDrag(event) {
 }
 
 stage.addEventListener('pointerdown', (event) => {
-  if (!pointerHitsCube(event)) return;
-
   event.preventDefault();
   stage.focus({ preventScroll: true });
   beginInteraction();
@@ -188,10 +171,7 @@ stage.addEventListener('pointerdown', (event) => {
 });
 
 stage.addEventListener('pointermove', (event) => {
-  if (mode !== 'dragging' || event.pointerId !== activePointerId) {
-    stage.classList.toggle('can-grab', pointerHitsCube(event));
-    return;
-  }
+  if (mode !== 'dragging' || event.pointerId !== activePointerId) return;
 
   const now = performance.now();
   const elapsed = Math.max(now - previousPointerTime, 8);
@@ -208,9 +188,6 @@ stage.addEventListener('pointermove', (event) => {
   previousPointerTime = now;
 });
 
-stage.addEventListener('pointerleave', () => {
-  if (mode !== 'dragging') stage.classList.remove('can-grab');
-});
 stage.addEventListener('pointerup', finishDrag);
 stage.addEventListener('pointercancel', finishDrag);
 
