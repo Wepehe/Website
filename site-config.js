@@ -98,9 +98,9 @@ export const SITE_CONFIG = {
     color: 0xfff4e8,
     intensity: 1000,
     distance: 14,
-    angle: Math.PI * 0.15,
+    angle: Math.PI * 0.12,
     penumbra: 0.58,
-    decay: 2,
+    decay: 10,
     // Matching position/target X and Z values keeps the beam vertical.
     // Reduce angle to tighten the pool; increase it to light more of the room.
     position: [0, 6.8, 0],
