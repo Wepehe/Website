@@ -100,7 +100,7 @@ export const SITE_CONFIG = {
     distance: 14,
     angle: Math.PI * 0.12,
     penumbra: 0.58,
-    decay: 10,
+    decay: 1,
     // Matching position/target X and Z values keeps the beam vertical.
     // Reduce angle to tighten the pool; increase it to light more of the room.
     position: [0, 6.8, 0],
