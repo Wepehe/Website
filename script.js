@@ -9,7 +9,6 @@ const INITIAL_YAW = -0.4;
 const AUTO_SPEED = (Math.PI * 2) / 48000;
 const RETURN_DELAY = 10000;
 const RETURN_DURATION = 2200;
-const DRAG_SENSITIVITY = 0.0062;
 
 let renderer;
 
@@ -39,7 +38,6 @@ const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
 camera.position.set(0, 0.2, 7.4);
 
 const cubeGroup = new THREE.Group();
-cubeGroup.rotation.order = 'YXZ';
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
@@ -47,8 +45,9 @@ const glassMaterial = new THREE.MeshPhysicalMaterial({
   roughness: 0.035,
   metalness: 0,
   transmission: 0.94,
-  thickness: 0.7,
-  ior: 1.52,
+  thickness: 1.15,
+  ior: 1.62,
+  dispersion: 0.045,
   attenuationColor: new THREE.Color(0x202020),
   attenuationDistance: 5,
   clearcoat: 0.18,
@@ -103,36 +102,58 @@ spotLight.target.position.set(0, 0, 0);
 scene.add(spotLight, spotLight.target);
 
 let mode = reduceMotion ? 'manual' : 'auto';
-let pitch = BASE_PITCH;
-let yaw = INITIAL_YAW;
 let autoYaw = INITIAL_YAW;
-let velocityX = 0;
-let velocityY = 0;
 let previousTime = performance.now();
 let previousPointerTime = 0;
-let previousPointerX = 0;
-let previousPointerY = 0;
 let activePointerId = null;
 let idleTimer = null;
 let returnStartedAt = 0;
-let returnYawOffset = 0;
-let returnStartPitch = BASE_PITCH;
+let angularSpeed = 0;
+
+const autoEuler = new THREE.Euler(BASE_PITCH, INITIAL_YAW, 0, 'YXZ');
+const currentQuaternion = new THREE.Quaternion().setFromEuler(autoEuler);
+const dragStartQuaternion = new THREE.Quaternion();
+const returnStartQuaternion = new THREE.Quaternion();
+const targetAutoQuaternion = new THREE.Quaternion();
+const dragStartVector = new THREE.Vector3();
+const previousTrackballVector = new THREE.Vector3();
+const angularVelocityAxis = new THREE.Vector3(0, 1, 0);
+const deltaQuaternion = new THREE.Quaternion();
+const inertiaQuaternion = new THREE.Quaternion();
+const cameraRight = new THREE.Vector3();
+const cameraUp = new THREE.Vector3();
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max);
-const shortestAngle = (angle) => ((angle + Math.PI) % (Math.PI * 2) + Math.PI * 2) % (Math.PI * 2) - Math.PI;
 const easeInOutCubic = (value) => value < 0.5
   ? 4 * value * value * value
   : 1 - Math.pow(-2 * value + 2, 3) / 2;
+
+function updateAutoQuaternion(target = targetAutoQuaternion) {
+  autoEuler.set(BASE_PITCH, autoYaw, 0, 'YXZ');
+  return target.setFromEuler(autoEuler);
+}
+
+function projectPointerToTrackball(clientX, clientY, target = new THREE.Vector3()) {
+  const bounds = renderer.domElement.getBoundingClientRect();
+  const radius = Math.min(bounds.width, bounds.height) * 0.36;
+  const x = (clientX - bounds.left - bounds.width / 2) / radius;
+  const y = (bounds.top + bounds.height / 2 - clientY) / radius;
+  const distanceSquared = x * x + y * y;
+  const z = distanceSquared <= 0.5
+    ? Math.sqrt(1 - distanceSquared)
+    : 0.5 / Math.sqrt(distanceSquared);
+
+  target.set(x, y, z).normalize();
+  return target.applyQuaternion(camera.quaternion);
+}
 
 function beginReturn() {
   if (mode === 'dragging' || reduceMotion) return;
 
   mode = 'returning';
   returnStartedAt = performance.now();
-  returnYawOffset = shortestAngle(yaw - autoYaw);
-  returnStartPitch = pitch;
-  velocityX = 0;
-  velocityY = 0;
+  returnStartQuaternion.copy(currentQuaternion);
+  angularSpeed = 0;
 }
 
 function scheduleReturn() {
@@ -161,11 +182,11 @@ stage.addEventListener('pointerdown', (event) => {
   beginInteraction();
   mode = 'dragging';
   activePointerId = event.pointerId;
-  previousPointerX = event.clientX;
-  previousPointerY = event.clientY;
   previousPointerTime = performance.now();
-  velocityX = 0;
-  velocityY = 0;
+  angularSpeed = 0;
+  dragStartQuaternion.copy(currentQuaternion);
+  projectPointerToTrackball(event.clientX, event.clientY, dragStartVector);
+  previousTrackballVector.copy(dragStartVector);
   stage.classList.add('is-dragging');
   stage.setPointerCapture(event.pointerId);
 });
@@ -175,16 +196,25 @@ stage.addEventListener('pointermove', (event) => {
 
   const now = performance.now();
   const elapsed = Math.max(now - previousPointerTime, 8);
-  const deltaX = event.clientX - previousPointerX;
-  const deltaY = event.clientY - previousPointerY;
+  const currentVector = projectPointerToTrackball(event.clientX, event.clientY);
 
-  yaw += deltaX * DRAG_SENSITIVITY;
-  pitch = clamp(pitch - deltaY * DRAG_SENSITIVITY, -1.25, 1.25);
-  velocityX = (deltaX * DRAG_SENSITIVITY) / elapsed;
-  velocityY = (-deltaY * DRAG_SENSITIVITY) / elapsed;
+  deltaQuaternion.setFromUnitVectors(dragStartVector, currentVector);
+  currentQuaternion.copy(deltaQuaternion).multiply(dragStartQuaternion).normalize();
 
-  previousPointerX = event.clientX;
-  previousPointerY = event.clientY;
+  deltaQuaternion.setFromUnitVectors(previousTrackballVector, currentVector).normalize();
+  const halfAngle = Math.acos(clamp(deltaQuaternion.w, -1, 1));
+  const sinHalfAngle = Math.sin(halfAngle);
+  const angle = halfAngle * 2;
+
+  if (angle > 0.0001 && Math.abs(sinHalfAngle) > 0.0001) {
+    angularVelocityAxis
+      .set(deltaQuaternion.x, deltaQuaternion.y, deltaQuaternion.z)
+      .divideScalar(sinHalfAngle)
+      .normalize();
+    angularSpeed = Math.min(angle / elapsed, 0.018);
+  }
+
+  previousTrackballVector.copy(currentVector);
   previousPointerTime = now;
 });
 
@@ -196,8 +226,14 @@ stage.addEventListener('keydown', (event) => {
 
   event.preventDefault();
   beginInteraction();
-  yaw += event.key === 'ArrowLeft' ? -0.16 : event.key === 'ArrowRight' ? 0.16 : 0;
-  pitch = clamp(pitch + (event.key === 'ArrowUp' ? 0.16 : event.key === 'ArrowDown' ? -0.16 : 0), -1.25, 1.25);
+  cameraRight.set(1, 0, 0).applyQuaternion(camera.quaternion).normalize();
+  cameraUp.set(0, 1, 0).applyQuaternion(camera.quaternion).normalize();
+  const isHorizontal = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
+  const axis = isHorizontal ? cameraUp : cameraRight;
+  const direction = event.key === 'ArrowLeft' || event.key === 'ArrowDown' ? -1 : 1;
+  deltaQuaternion.setFromAxisAngle(axis, direction * 0.16);
+  currentQuaternion.premultiply(deltaQuaternion).normalize();
+  angularSpeed = 0;
   scheduleReturn();
 });
 
@@ -224,30 +260,27 @@ function animate(now) {
     autoYaw += delta * AUTO_SPEED;
 
     if (mode === 'auto') {
-      pitch = BASE_PITCH;
-      yaw = autoYaw;
+      currentQuaternion.copy(updateAutoQuaternion());
     } else if (mode === 'manual') {
-      yaw += velocityX * delta;
-      pitch = clamp(pitch + velocityY * delta, -1.25, 1.25);
-      const friction = Math.exp(-delta / 520);
-      velocityX *= friction;
-      velocityY *= friction;
+      if (angularSpeed > 0.00001) {
+        inertiaQuaternion.setFromAxisAngle(angularVelocityAxis, angularSpeed * delta);
+        currentQuaternion.premultiply(inertiaQuaternion).normalize();
+        angularSpeed *= Math.exp(-delta / 520);
+      }
     } else if (mode === 'returning') {
       const progress = clamp((now - returnStartedAt) / RETURN_DURATION, 0, 1);
       const eased = easeInOutCubic(progress);
-      pitch = returnStartPitch + (BASE_PITCH - returnStartPitch) * eased;
-      yaw = autoYaw + returnYawOffset * (1 - eased);
+      updateAutoQuaternion();
+      currentQuaternion.slerpQuaternions(returnStartQuaternion, targetAutoQuaternion, eased);
 
       if (progress === 1) {
         mode = 'auto';
-        pitch = BASE_PITCH;
-        yaw = autoYaw;
+        currentQuaternion.copy(targetAutoQuaternion);
       }
     }
   }
 
-  cubeGroup.rotation.x = pitch;
-  cubeGroup.rotation.y = yaw;
+  cubeGroup.quaternion.copy(currentQuaternion);
   renderer.render(scene, camera);
 }
 
