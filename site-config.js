@@ -96,9 +96,9 @@ export const SITE_CONFIG = {
 
   spotlight: {
     color: 0xfff4e8,
-    intensity: 1600,
+    intensity: 1000,
     distance: 14,
-    angle: Math.PI * 0.085,
+    angle: Math.PI * 0.15,
     penumbra: 0.58,
     decay: 2,
     // Matching position/target X and Z values keeps the beam vertical.
