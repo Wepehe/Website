@@ -57,7 +57,7 @@ export const SITE_CONFIG = {
       color: 0x000000,
       roughness: 0.08,
       metalness: 0,
-      transmission: 0.9,
+      transmission: 0.5,
       transparent: true,
       opacity: 0.2,
       depthWrite: false,
