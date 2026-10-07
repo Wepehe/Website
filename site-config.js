@@ -33,7 +33,7 @@ export const SITE_CONFIG = {
     // position[0] moves it left/right; position[2] moves it forward/back.
     floor: {
       size: [30, 30],
-      position: [0, -1.75, -2],
+      position: [0, -2, -2],
       rotationX: -Math.PI / 2,
       receiveShadow: true,
     },
