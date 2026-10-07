@@ -1,19 +1,23 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
+import { SITE_CONFIG as config } from './site-config.js?v=20261007-controls3';
 
 const stage = document.querySelector('.stage');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const BASE_PITCH = 0.34;
-const INITIAL_YAW = -0.56;
-const AUTO_SPEED = (Math.PI * 2) / 48000;
-const RETURN_DELAY = 10000;
-const RETURN_DURATION = 2200;
+const BASE_PITCH = config.motion.basePitch;
+const INITIAL_YAW = config.motion.initialYaw;
+const AUTO_SPEED = (Math.PI * 2) / config.motion.autoRotationMs;
+const RETURN_DELAY = config.motion.returnDelayMs;
+const RETURN_DURATION = config.motion.returnDurationMs;
 
 let renderer;
 
 try {
-  renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
+  renderer = new THREE.WebGLRenderer({
+    antialias: config.renderer.antialias,
+    powerPreference: config.renderer.powerPreference,
+  });
 } catch (error) {
   const message = document.createElement('p');
   message.className = 'webgl-error';
@@ -22,80 +26,75 @@ try {
   throw error;
 }
 
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+renderer.setPixelRatio(Math.min(window.devicePixelRatio, config.renderer.maxPixelRatio));
 renderer.setSize(stage.clientWidth, stage.clientHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.05;
-renderer.transmissionResolutionScale = 1;
+renderer.toneMappingExposure = config.renderer.exposure;
+renderer.transmissionResolutionScale = config.renderer.transmissionResolutionScale;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 stage.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x000000);
+scene.background = new THREE.Color(config.scene.backgroundColor);
 
-const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
-camera.position.set(0, 0.2, 8.7);
+const camera = new THREE.PerspectiveCamera(
+  config.camera.fieldOfView,
+  1,
+  config.camera.near,
+  config.camera.far,
+);
+camera.position.set(...config.camera.position);
 
 const roomMaterial = new THREE.MeshStandardMaterial({
-  color: 0x080808,
-  roughness: 0.82,
-  metalness: 0,
+  color: config.room.material.color,
+  roughness: config.room.material.roughness,
+  metalness: config.room.material.metalness,
 });
 
-const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), roomMaterial);
-floor.rotation.x = -Math.PI / 2;
-floor.position.set(0, -1.75, -2);
-floor.receiveShadow = true;
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(...config.room.floor.size), roomMaterial);
+floor.rotation.x = config.room.floor.rotationX;
+floor.position.set(...config.room.floor.position);
+floor.receiveShadow = config.room.floor.receiveShadow;
 scene.add(floor);
 
-const backWall = new THREE.Mesh(new THREE.PlaneGeometry(30, 12), roomMaterial);
-backWall.position.set(0, 4.25, -4.5);
-backWall.receiveShadow = true;
+const backWall = new THREE.Mesh(new THREE.PlaneGeometry(...config.room.backWall.size), roomMaterial);
+backWall.position.set(...config.room.backWall.position);
+backWall.receiveShadow = config.room.backWall.receiveShadow;
 scene.add(backWall);
 
 const cubeGroup = new THREE.Group();
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0xf4f7f8,
-  roughness: 0.08,
-  metalness: 0,
-  transmission: 0.9,
-  transparent: true,
-  opacity: 0.16,
-  depthWrite: false,
-  thickness: 1.35,
-  ior: 1.5,
-  dispersion: 0.015,
-  attenuationColor: new THREE.Color(0x9aadb3),
-  attenuationDistance: 14,
-  clearcoat: 0.5,
-  clearcoatRoughness: 0.03,
-  specularIntensity: 1,
-  specularColor: new THREE.Color(0xffffff),
+  ...config.cube.material,
+  attenuationColor: new THREE.Color(config.cube.material.attenuationColor),
+  specularColor: new THREE.Color(config.cube.material.specularColor),
 });
 
-const cubeGeometry = new RoundedBoxGeometry(2.4, 2.4, 2.4, 8, 0.055);
+const cubeGeometry = new RoundedBoxGeometry(
+  ...config.cube.size,
+  config.cube.cornerSegments,
+  config.cube.cornerRadius,
+);
 const cubeBody = new THREE.Mesh(cubeGeometry, glassMaterial);
-cubeBody.castShadow = false;
-cubeBody.receiveShadow = true;
+cubeBody.castShadow = config.cube.castShadow;
+cubeBody.receiveShadow = config.cube.receiveShadow;
 cubeGroup.add(cubeBody);
 
 await document.fonts.ready;
 
 const labelCanvas = document.createElement('canvas');
-labelCanvas.width = 1024;
-labelCanvas.height = 512;
+labelCanvas.width = config.label.canvasSize[0];
+labelCanvas.height = config.label.canvasSize[1];
 const labelContext = labelCanvas.getContext('2d');
 labelContext.clearRect(0, 0, labelCanvas.width, labelCanvas.height);
-labelContext.fillStyle = '#f1f1ee';
+labelContext.fillStyle = config.label.color;
 labelContext.textAlign = 'center';
 labelContext.textBaseline = 'middle';
-labelContext.font = '600 142px Inter, sans-serif';
-labelContext.fillText('COMING', 512, 190);
-labelContext.fillText('SOON', 512, 330);
+labelContext.font = config.label.font;
+config.label.lines.forEach(({ text, x, y }) => labelContext.fillText(text, x, y));
 
 const labelTexture = new THREE.CanvasTexture(labelCanvas);
 labelTexture.colorSpace = THREE.SRGBColorSpace;
@@ -104,22 +103,29 @@ labelTexture.anisotropy = renderer.capabilities.getMaxAnisotropy();
 const labelMaterial = new THREE.MeshBasicMaterial({
   map: labelTexture,
   transparent: true,
-  alphaTest: 0.02,
+  alphaTest: config.label.alphaTest,
   depthWrite: false,
   toneMapped: false,
 });
-const label = new THREE.Mesh(new THREE.PlaneGeometry(1.9, 0.95), labelMaterial);
-label.position.z = 1.23;
-label.renderOrder = 2;
+const label = new THREE.Mesh(new THREE.PlaneGeometry(...config.label.planeSize), labelMaterial);
+label.position.set(...config.label.position);
+label.renderOrder = config.label.renderOrder;
 cubeGroup.add(label);
 
-const spotLight = new THREE.SpotLight(0xfff4e8, 1600, 22, Math.PI * 0.2, 0.68, 2);
-spotLight.position.set(-2.8, 6.2, 3.8);
-spotLight.castShadow = true;
-spotLight.shadow.mapSize.set(2048, 2048);
-spotLight.shadow.bias = -0.00015;
-spotLight.shadow.normalBias = 0.025;
-spotLight.target.position.set(0, -0.35, -0.6);
+const spotLight = new THREE.SpotLight(
+  config.spotlight.color,
+  config.spotlight.intensity,
+  config.spotlight.distance,
+  config.spotlight.angle,
+  config.spotlight.penumbra,
+  config.spotlight.decay,
+);
+spotLight.position.set(...config.spotlight.position);
+spotLight.castShadow = config.spotlight.castShadow;
+spotLight.shadow.mapSize.set(...config.spotlight.shadowMapSize);
+spotLight.shadow.bias = config.spotlight.shadowBias;
+spotLight.shadow.normalBias = config.spotlight.shadowNormalBias;
+spotLight.target.position.set(...config.spotlight.target);
 scene.add(spotLight, spotLight.target);
 
 let mode = reduceMotion ? 'manual' : 'auto';
@@ -156,13 +162,13 @@ function updateAutoQuaternion(target = targetAutoQuaternion) {
 
 function projectPointerToTrackball(clientX, clientY, target = new THREE.Vector3()) {
   const bounds = renderer.domElement.getBoundingClientRect();
-  const radius = Math.min(bounds.width, bounds.height) * 0.36;
+  const radius = Math.min(bounds.width, bounds.height) * config.controls.trackballRadiusScale;
   const x = (clientX - bounds.left - bounds.width / 2) / radius;
   const y = (bounds.top + bounds.height / 2 - clientY) / radius;
   const distanceSquared = x * x + y * y;
-  const z = distanceSquared <= 0.5
+  const z = distanceSquared <= config.controls.trackballEdgeThreshold
     ? Math.sqrt(1 - distanceSquared)
-    : 0.5 / Math.sqrt(distanceSquared);
+    : config.controls.trackballEdgeThreshold / Math.sqrt(distanceSquared);
 
   target.set(x, y, z).normalize();
   return target.applyQuaternion(camera.quaternion);
@@ -216,7 +222,7 @@ stage.addEventListener('pointermove', (event) => {
   if (mode !== 'dragging' || event.pointerId !== activePointerId) return;
 
   const now = performance.now();
-  const elapsed = Math.max(now - previousPointerTime, 8);
+  const elapsed = Math.max(now - previousPointerTime, config.controls.minimumPointerDeltaMs);
   const currentVector = projectPointerToTrackball(event.clientX, event.clientY);
 
   deltaQuaternion.setFromUnitVectors(dragStartVector, currentVector);
@@ -232,7 +238,7 @@ stage.addEventListener('pointermove', (event) => {
       .set(deltaQuaternion.x, deltaQuaternion.y, deltaQuaternion.z)
       .divideScalar(sinHalfAngle)
       .normalize();
-    angularSpeed = Math.min(angle / elapsed, 0.018);
+    angularSpeed = Math.min(angle / elapsed, config.controls.maximumAngularSpeed);
   }
 
   previousTrackballVector.copy(currentVector);
@@ -252,7 +258,7 @@ stage.addEventListener('keydown', (event) => {
   const isHorizontal = event.key === 'ArrowLeft' || event.key === 'ArrowRight';
   const axis = isHorizontal ? cameraUp : cameraRight;
   const direction = event.key === 'ArrowLeft' || event.key === 'ArrowDown' ? -1 : 1;
-  deltaQuaternion.setFromAxisAngle(axis, direction * 0.16);
+  deltaQuaternion.setFromAxisAngle(axis, direction * config.controls.keyboardRotationStep);
   currentQuaternion.premultiply(deltaQuaternion).normalize();
   angularSpeed = 0;
   scheduleReturn();
@@ -263,18 +269,19 @@ function resize() {
   const height = stage.clientHeight;
   const aspect = width / height;
   camera.aspect = aspect;
-  camera.position.z = 8.7 * Math.max(1, 0.9 / aspect);
-  camera.lookAt(0, 0, 0);
+  camera.position.z = config.camera.position[2]
+    * Math.max(1, config.camera.narrowScreenFraming / aspect);
+  camera.lookAt(...config.camera.lookAt);
   camera.updateProjectionMatrix();
   renderer.setSize(width, height, false);
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, config.renderer.maxPixelRatio));
 }
 
 new ResizeObserver(resize).observe(stage);
 resize();
 
 function animate(now) {
-  const delta = Math.min(now - previousTime, 32);
+  const delta = Math.min(now - previousTime, config.motion.maxFrameDeltaMs);
   previousTime = now;
 
   if (!reduceMotion) {
@@ -286,7 +293,7 @@ function animate(now) {
       if (angularSpeed > 0.00001) {
         inertiaQuaternion.setFromAxisAngle(angularVelocityAxis, angularSpeed * delta);
         currentQuaternion.premultiply(inertiaQuaternion).normalize();
-        angularSpeed *= Math.exp(-delta / 520);
+        angularSpeed *= Math.exp(-delta / config.motion.inertiaDecayMs);
       }
     } else if (mode === 'returning') {
       const progress = clamp((now - returnStartedAt) / RETURN_DURATION, 0, 1);

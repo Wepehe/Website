@@ -7,8 +7,16 @@ A minimal WebGL teaser featuring a transparent glass cube in a dark room.
 - Three.js `0.186.1` renders the scene directly in WebGL.
 - A physical glass material uses 90% transmission, restrained surface alpha, a glass IOR, optical thickness, and subtle dispersion.
 - A black floor and back wall provide a visible horizon edge for the glass to refract.
-- One overhead spotlight is the scene's only light source, so every highlight responds consistently as the cube rotates.
+- One narrow spotlight points straight down at the cube, limiting spill onto the wall and floor.
 - The front-face label is a high-resolution canvas texture layered onto the glass.
+
+## Customization
+
+Edit `site-config.js` to tune the renderer, camera, room geometry, cube material, label, spotlight, motion, and controls. Three.js uses `[x, y, z]` positions: X moves left/right, Y moves up/down, and Z moves toward/away from the camera.
+
+- Move the floor with `room.floor.position`; its Y value controls its height.
+- Move the back wall with `room.backWall.position`; its Z value controls its depth.
+- Keep the wall sitting on the floor by setting the wall center Y to `floor Y + wall height / 2`.
 
 ## Interaction
 
