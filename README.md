@@ -29,4 +29,16 @@ Edit `site-config.js` to tune the renderer, camera, room geometry, cube material
 
 The approved interaction feel is preserved by the Git tag `interaction-checkpoint-2026-10-07`.
 
+## Local development
+
+With Docker Desktop installed and running:
+
+```powershell
+docker compose up --build
+```
+
+Open `http://localhost:8080`. The project directory is mounted read-only into the container, and edits to `index.html`, `styles.css`, `script.js`, or `site-config.js` automatically refresh the browser. Stop with `Ctrl+C`; remove the stopped container with `docker compose down`.
+
+Without Docker, run `npm run dev` with Node.js installed. The live-reload server has no third-party dependencies.
+
 Pushes to `main` deploy automatically through the included GitHub Pages workflow.

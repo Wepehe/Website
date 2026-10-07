@@ -1,0 +1,12 @@
+services:
+  website:
+    build:
+      context: .
+    init: true
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      SITE_ROOT: /site
+      DEV_HOST: 0.0.0.0
+    volumes:
+      - .:/site:ro
