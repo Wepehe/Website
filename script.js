@@ -26,7 +26,8 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
 renderer.setSize(stage.clientWidth, stage.clientHeight, false);
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-renderer.toneMappingExposure = 1.15;
+renderer.toneMappingExposure = 1.05;
+renderer.transmissionResolutionScale = 1;
 renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 stage.prepend(renderer.domElement);
@@ -37,33 +38,48 @@ scene.background = new THREE.Color(0x000000);
 const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
 camera.position.set(0, 0.2, 8.7);
 
+const roomMaterial = new THREE.MeshStandardMaterial({
+  color: 0x080808,
+  roughness: 0.82,
+  metalness: 0,
+});
+
+const floor = new THREE.Mesh(new THREE.PlaneGeometry(30, 30), roomMaterial);
+floor.rotation.x = -Math.PI / 2;
+floor.position.set(0, -1.75, -2);
+floor.receiveShadow = true;
+scene.add(floor);
+
+const backWall = new THREE.Mesh(new THREE.PlaneGeometry(30, 12), roomMaterial);
+backWall.position.set(0, 4.25, -4.5);
+backWall.receiveShadow = true;
+scene.add(backWall);
+
 const cubeGroup = new THREE.Group();
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0xb9c9cf,
-  roughness: 0.26,
+  color: 0xf4f7f8,
+  roughness: 0.08,
   metalness: 0,
-  transmission: 0.28,
+  transmission: 0.9,
   transparent: true,
-  opacity: 0.56,
-  depthWrite: true,
-  thickness: 1.6,
-  ior: 1.46,
-  dispersion: 0.008,
-  attenuationColor: new THREE.Color(0xb5c8ce),
-  attenuationDistance: 10,
-  clearcoat: 0.42,
-  clearcoatRoughness: 0.1,
-  specularIntensity: 0.9,
+  opacity: 0.16,
+  depthWrite: false,
+  thickness: 1.35,
+  ior: 1.5,
+  dispersion: 0.015,
+  attenuationColor: new THREE.Color(0x9aadb3),
+  attenuationDistance: 14,
+  clearcoat: 0.5,
+  clearcoatRoughness: 0.03,
+  specularIntensity: 1,
   specularColor: new THREE.Color(0xffffff),
-  emissive: new THREE.Color(0x84969d),
-  emissiveIntensity: 0.72,
 });
 
 const cubeGeometry = new RoundedBoxGeometry(2.4, 2.4, 2.4, 8, 0.055);
 const cubeBody = new THREE.Mesh(cubeGeometry, glassMaterial);
-cubeBody.castShadow = true;
+cubeBody.castShadow = false;
 cubeBody.receiveShadow = true;
 cubeGroup.add(cubeBody);
 
@@ -97,13 +113,13 @@ label.position.z = 1.23;
 label.renderOrder = 2;
 cubeGroup.add(label);
 
-const spotLight = new THREE.SpotLight(0xfff4e8, 1600, 18, Math.PI * 0.2, 0.68, 2);
+const spotLight = new THREE.SpotLight(0xfff4e8, 1600, 22, Math.PI * 0.2, 0.68, 2);
 spotLight.position.set(-2.8, 6.2, 3.8);
 spotLight.castShadow = true;
 spotLight.shadow.mapSize.set(2048, 2048);
 spotLight.shadow.bias = -0.00015;
 spotLight.shadow.normalBias = 0.025;
-spotLight.target.position.set(0, 0, 0);
+spotLight.target.position.set(0, -0.35, -0.6);
 scene.add(spotLight, spotLight.target);
 
 let mode = reduceMotion ? 'manual' : 'auto';
@@ -247,7 +263,7 @@ function resize() {
   const height = stage.clientHeight;
   const aspect = width / height;
   camera.aspect = aspect;
-  camera.position.z = 8.7 * Math.max(1, 0.72 / aspect);
+  camera.position.z = 8.7 * Math.max(1, 0.9 / aspect);
   camera.lookAt(0, 0, 0);
   camera.updateProjectionMatrix();
   renderer.setSize(width, height, false);
