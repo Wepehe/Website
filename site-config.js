@@ -31,9 +31,9 @@ export const SITE_CONFIG = {
 
   room: {
     material: {
-      color: 0x080808,
+      color: 0x000000,
       roughness: 0.82,
-      metalness: 0,
+      metalness: 0.4,
     },
 
     // Raise/lower the floor with position[1].
