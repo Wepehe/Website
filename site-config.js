@@ -103,7 +103,7 @@ export const SITE_CONFIG = {
     decay: 2,
     // Matching position/target X and Z values keeps the beam vertical.
     // Reduce angle to tighten the pool; increase it to light more of the room.
-    position: [-3, 6.8, 0],
+    position: [0, 6.8, -2],
     target: [0, 0, 0],
     castShadow: true,
     shadowMapSize: [2048, 2048],
