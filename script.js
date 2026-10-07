@@ -4,8 +4,8 @@ import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.j
 const stage = document.querySelector('.stage');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-const BASE_PITCH = -0.16;
-const INITIAL_YAW = -0.4;
+const BASE_PITCH = 0.34;
+const INITIAL_YAW = -0.56;
 const AUTO_SPEED = (Math.PI * 2) / 48000;
 const RETURN_DELAY = 10000;
 const RETURN_DURATION = 2200;
@@ -35,25 +35,30 @@ const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x000000);
 
 const camera = new THREE.PerspectiveCamera(32, 1, 0.1, 50);
-camera.position.set(0, 0.2, 7.4);
+camera.position.set(0, 0.2, 8.7);
 
 const cubeGroup = new THREE.Group();
 scene.add(cubeGroup);
 
 const glassMaterial = new THREE.MeshPhysicalMaterial({
-  color: 0x111111,
-  roughness: 0.035,
+  color: 0xb9c9cf,
+  roughness: 0.26,
   metalness: 0,
-  transmission: 0.94,
-  thickness: 1.15,
-  ior: 1.62,
-  dispersion: 0.045,
-  attenuationColor: new THREE.Color(0x202020),
-  attenuationDistance: 5,
-  clearcoat: 0.18,
-  clearcoatRoughness: 0.025,
-  specularIntensity: 1,
+  transmission: 0.28,
+  transparent: true,
+  opacity: 0.56,
+  depthWrite: true,
+  thickness: 1.6,
+  ior: 1.46,
+  dispersion: 0.008,
+  attenuationColor: new THREE.Color(0xb5c8ce),
+  attenuationDistance: 10,
+  clearcoat: 0.42,
+  clearcoatRoughness: 0.1,
+  specularIntensity: 0.9,
   specularColor: new THREE.Color(0xffffff),
+  emissive: new THREE.Color(0x84969d),
+  emissiveIntensity: 0.72,
 });
 
 const cubeGeometry = new RoundedBoxGeometry(2.4, 2.4, 2.4, 8, 0.055);
@@ -92,8 +97,8 @@ label.position.z = 1.23;
 label.renderOrder = 2;
 cubeGroup.add(label);
 
-const spotLight = new THREE.SpotLight(0xfff4e8, 1200, 15, Math.PI * 0.2, 0.68, 2);
-spotLight.position.set(0, 5.4, 1.5);
+const spotLight = new THREE.SpotLight(0xfff4e8, 1600, 18, Math.PI * 0.2, 0.68, 2);
+spotLight.position.set(-2.8, 6.2, 3.8);
 spotLight.castShadow = true;
 spotLight.shadow.mapSize.set(2048, 2048);
 spotLight.shadow.bias = -0.00015;
@@ -242,7 +247,7 @@ function resize() {
   const height = stage.clientHeight;
   const aspect = width / height;
   camera.aspect = aspect;
-  camera.position.z = 7.4 * Math.max(1, 0.72 / aspect);
+  camera.position.z = 8.7 * Math.max(1, 0.72 / aspect);
   camera.lookAt(0, 0, 0);
   camera.updateProjectionMatrix();
   renderer.setSize(width, height, false);
