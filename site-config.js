@@ -16,7 +16,7 @@ export const SITE_CONFIG = {
   // A very dim, directionless fill so unlit parts of the room are not pitch black.
   // The high-looking intensity compensates for the near-black room material and filmic tone mapping.
   ambientLight: {
-    color: 0xb7c8d4,
+    color: 0xffffff,
     intensity: 30,
   },
 
