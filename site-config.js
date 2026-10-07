@@ -17,7 +17,7 @@ export const SITE_CONFIG = {
   // The high-looking intensity compensates for the near-black room material and filmic tone mapping.
   ambientLight: {
     color: 0xffffff,
-    intensity: 30,
+    intensity: 15,
   },
 
   camera: {
