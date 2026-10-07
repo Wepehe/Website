@@ -10,7 +10,7 @@ export const SITE_CONFIG = {
   },
 
   scene: {
-    backgroundColor: 0x000000,
+    backgroundColor: 0x080808,
   },
 
   camera: {
