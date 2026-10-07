@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
-import { SITE_CONFIG as config } from './site-config.js?v=20261007-controls3';
+import { SITE_CONFIG as config } from './site-config.js?v=20261007-ambient5';
 
 const stage = document.querySelector('.stage');
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -38,6 +38,12 @@ stage.prepend(renderer.domElement);
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(config.scene.backgroundColor);
+
+const ambientLight = new THREE.AmbientLight(
+  config.ambientLight.color,
+  config.ambientLight.intensity,
+);
+scene.add(ambientLight);
 
 const camera = new THREE.PerspectiveCamera(
   config.camera.fieldOfView,

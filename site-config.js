@@ -10,7 +10,14 @@ export const SITE_CONFIG = {
   },
 
   scene: {
-    backgroundColor: 0x080808,
+    backgroundColor: 0x303030,
+  },
+
+  // A very dim, directionless fill so unlit parts of the room are not pitch black.
+  // The high-looking intensity compensates for the near-black room material and filmic tone mapping.
+  ambientLight: {
+    color: 0xb7c8d4,
+    intensity: 10,
   },
 
   camera: {

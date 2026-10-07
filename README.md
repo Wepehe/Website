@@ -8,6 +8,7 @@ A minimal WebGL teaser featuring a transparent glass cube in a dark room.
 - A physical glass material uses 90% transmission, restrained surface alpha, a glass IOR, optical thickness, and subtle dispersion.
 - A black floor and back wall provide a visible horizon edge for the glass to refract.
 - One narrow spotlight points straight down at the cube, limiting spill onto the wall and floor.
+- A very dim ambient fill keeps the rest of the room just above complete black.
 - The front-face label is a high-resolution canvas texture layered onto the glass.
 
 ## Customization
