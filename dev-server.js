@@ -1,4 +1,4 @@
-import { createReadStream, readFileSync, statSync } from 'node:fs';
+import { createReadStream, readFileSync, readdirSync, statSync } from 'node:fs';
 import { createServer } from 'node:http';
 import path from 'node:path';
 
@@ -6,7 +6,6 @@ const root = path.resolve(process.env.SITE_ROOT ?? '.');
 const host = process.env.DEV_HOST ?? '127.0.0.1';
 const port = Number(process.env.DEV_PORT ?? 8080);
 const reloadClients = new Set();
-const watchedFiles = ['index.html', 'styles.css', 'script.js', 'site-config.js'];
 const modificationTimes = new Map();
 
 const contentTypes = {
@@ -19,6 +18,8 @@ const contentTypes = {
   '.jpg': 'image/jpeg',
   '.jpeg': 'image/jpeg',
   '.woff2': 'font/woff2',
+  '.pdf': 'application/pdf',
+  '.webp': 'image/webp',
 };
 
 const reloadScript = `
@@ -31,6 +32,25 @@ function sendReload() {
   reloadClients.forEach((response) => response.write('data: reload\n\n'));
 }
 
+function frontendFiles() {
+  const files = ['index.html'];
+  const walk = (directory) => {
+    let entries = [];
+    try {
+      entries = readdirSync(path.join(root, directory), { withFileTypes: true });
+    } catch {
+      return;
+    }
+    entries.forEach((entry) => {
+      const relativePath = path.posix.join(directory, entry.name);
+      if (entry.isDirectory()) walk(relativePath);
+      else files.push(relativePath);
+    });
+  };
+  walk('assets');
+  return files;
+}
+
 function getModificationTime(file) {
   try {
     return statSync(path.join(root, file)).mtimeMs;
@@ -39,17 +59,25 @@ function getModificationTime(file) {
   }
 }
 
-watchedFiles.forEach((file) => modificationTimes.set(file, getModificationTime(file)));
+frontendFiles().forEach((file) => modificationTimes.set(file, getModificationTime(file)));
 
 const watcher = setInterval(() => {
   let changed = false;
 
-  watchedFiles.forEach((file) => {
+  const files = frontendFiles();
+  const currentSet = new Set(files);
+  files.forEach((file) => {
     const previous = modificationTimes.get(file);
     const current = getModificationTime(file);
 
     if (current !== previous) {
       modificationTimes.set(file, current);
+      changed = true;
+    }
+  });
+  modificationTimes.forEach((_, file) => {
+    if (!currentSet.has(file)) {
+      modificationTimes.delete(file);
       changed = true;
     }
   });
@@ -86,7 +114,8 @@ const server = createServer((request, response) => {
 
   const pathSegments = pathname.split('/').filter(Boolean);
 
-  if (pathSegments.some((segment) => segment.startsWith('.')) || pathSegments[0] === 'node_modules') {
+  const isFrontendPath = pathname === '/index.html' || pathname.startsWith('/assets/');
+  if (!isFrontendPath || pathSegments.some((segment) => segment.startsWith('.'))) {
     response.writeHead(404).end('Not found');
     return;
   }

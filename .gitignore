@@ -4,3 +4,4 @@ Thumbs.db
 .idea/
 .cache/
 node_modules/
+server/data/*.ndjson

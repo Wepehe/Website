@@ -1,11 +1,14 @@
 {
-  "name": "coming-soon-cube",
+  "name": "cube-of-time-portfolio",
   "private": true,
   "type": "module",
   "engines": {
     "node": ">=18"
   },
   "scripts": {
-    "dev": "node dev-server.js"
+    "dev": "node dev-server.js",
+    "dev:api": "node --watch server/src/server.js",
+    "dev:all": "node dev-all.js",
+    "check": "node --check dev-server.js && node --check dev-all.js && node --check assets/js/content.js && node --check assets/js/contact.js && node --check assets/js/cube-scene.js && node --check assets/js/main.js && node --check assets/js/portfolio.js && node --check assets/js/scene-config.js && node --check server/src/config.js && node --check server/src/contact-store.js && node --check server/src/rate-limiter.js && node --check server/src/server.js && node --check server/src/validation.js"
   }
 }

@@ -10,3 +10,23 @@ services:
       DEV_HOST: 0.0.0.0
     volumes:
       - .:/site:ro
+    depends_on:
+      - api
+
+  api:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+    init: true
+    ports:
+      - "127.0.0.1:8787:8787"
+    environment:
+      HOST: 0.0.0.0
+      PORT: 8787
+      DATA_FILE: /data/contact-submissions.ndjson
+      ALLOWED_ORIGINS: http://localhost:8080,http://127.0.0.1:8080,https://wepehe.github.io
+    volumes:
+      - contact-data:/data
+
+volumes:
+  contact-data:
