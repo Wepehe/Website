@@ -1,67 +1,44 @@
-# Cube of Time portfolio
+# Coming Soon
 
-An interactive, non-scrolling portfolio built around a quaternion-controlled Three.js cube. The public frontend is static and deploys to GitHub Pages; the contact form uses a small, separate Node.js API.
+A minimal WebGL teaser featuring a transparent glass cube in a dark room.
 
-## Start locally
+## Rendering
 
-### Node.js (available now)
+- Three.js `0.186.1` renders the scene directly in WebGL.
+- A physical glass material uses 90% transmission, restrained surface alpha, a glass IOR, optical thickness, and subtle dispersion.
+- A black floor and back wall provide a visible horizon edge for the glass to refract.
+- One narrow spotlight points straight down at the cube, limiting spill onto the wall and floor.
+- A very dim ambient fill keeps the rest of the room just above complete black.
+- The front-face label is a high-resolution canvas texture layered onto the glass.
 
-```powershell
-npm run dev:all
-```
+## Customization
 
-Open `http://localhost:8080`. Changes inside `index.html` or `assets/` reload the browser. The contact API runs at `http://localhost:8787` and restarts when backend files change.
+Edit `site-config.js` to tune the renderer, camera, room geometry, cube material, label, spotlight, motion, and controls. Three.js uses `[x, y, z]` positions: X moves left/right, Y moves up/down, and Z moves toward/away from the camera.
 
-### Docker (after installing Docker Desktop)
+- Move the floor with `room.floor.position`; its Y value controls its height.
+- Move the back wall with `room.backWall.position`; its Z value controls its depth.
+- Keep the wall sitting on the floor by setting the wall center Y to `floor Y + wall height / 2`.
+
+## Interaction
+
+- The cube rotates automatically.
+- Drag anywhere on the stage with a mouse or touch using a quaternion arcball, surface-following rotation, momentum, and reliable pointer capture.
+- After ten seconds without interaction, it smoothly returns to its original alignment and automatic rotation.
+- Arrow keys provide keyboard rotation.
+- Automatic motion is disabled when the visitor prefers reduced motion.
+
+The approved interaction feel is preserved by the Git tag `interaction-checkpoint-2026-10-07`.
+
+## Local development
+
+With Docker Desktop installed and running:
 
 ```powershell
 docker compose up --build
 ```
 
-The same two services run on ports `8080` and `8787`. Contact submissions are stored in the `contact-data` Docker volume. Stop with `Ctrl+C`, then run `docker compose down` if you want to remove the stopped containers.
+Open `http://localhost:8080`. The project directory is mounted read-only into the container, and edits to `index.html`, `styles.css`, `script.js`, or `site-config.js` automatically refresh the browser. Stop with `Ctrl+C`; remove the stopped container with `docker compose down`.
 
-## Where to make changes
+Without Docker, run `npm run dev` with Node.js installed. The live-reload server has no third-party dependencies.
 
-| Goal | File |
-| --- | --- |
-| Name, biography, email, resume, projects | `assets/js/content.js` |
-| Cube size, glass, light, speed, and positions | `assets/js/scene-config.js` |
-| Page structure and accessible text | `index.html` |
-| Layout and component appearance | `assets/css/main.css` |
-| Dark/light colors and fonts | `assets/css/tokens.css` |
-| Motion keyframes | `assets/css/animations.css` |
-| 3D rendering and quaternion interaction | `assets/js/cube-scene.js` |
-| Navigation and page transitions | `assets/js/main.js` |
-| Portfolio timeline behavior | `assets/js/portfolio.js` |
-| Contact form browser behavior | `assets/js/contact.js` |
-| Contact API behavior | `server/src/` |
-
-Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a guided tour and the reasoning behind this structure.
-
-## Personalize it
-
-1. Replace the placeholder values in `assets/js/content.js`.
-2. Put your PDF at `assets/resume.pdf` and set `links.resume` to `'./assets/resume.pdf'`.
-3. Add project objects using a unique lowercase `id`; the timeline and detail pages are generated automatically.
-4. Tune the 3D presentation states in `assets/js/scene-config.js`.
-5. Preview locally before pushing.
-
-## Contact backend
-
-The API validates input, limits request size, rate-limits by IP, checks allowed origins, uses a bot honeypot, and appends accepted messages as newline-delimited JSON. Local messages go to `server/data/contact-submissions.ndjson`; this file is ignored by Git.
-
-GitHub Pages cannot run server code. For production, deploy `server/Dockerfile` to a container-capable host with persistent storage, set its `ALLOWED_ORIGINS` environment variable to your Pages/custom domain, and put its HTTPS address in `CONTENT.contact.productionApiUrl`. Until then, the direct email link works but the hosted form explains that the API is not configured.
-
-## Deployment
-
-Pushes to `main` run `.github/workflows/deploy.yml`. The workflow publishes only `index.html`, `.nojekyll`, and `assets/`; development and backend files are intentionally excluded.
-
-```powershell
-git add .
-git commit -m "Build interactive portfolio"
-git push origin main
-```
-
-The current repository publishes at `https://wepehe.github.io/Website/` once the Pages workflow succeeds.
-
-The earlier glass-room version is recoverable from Git history and the tag `interaction-checkpoint-2026-10-07`; its retired working files are also kept locally under `.cache/retired/`.
+Pushes to `main` deploy automatically through the included GitHub Pages workflow.

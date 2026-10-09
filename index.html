@@ -1,19 +1,19 @@
 <!doctype html>
-<html lang="en" data-theme="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="An interactive 3D portfolio." />
-    <meta name="theme-color" content="#030409" />
-    <title>Wepehe — Interactive Portfolio</title>
+    <meta name="description" content="Coming soon." />
+    <meta name="theme-color" content="#000000" />
+    <title>Coming Soon</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Space+Grotesk:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="assets/css/main.css?v=20261008-portfolio1" />
+    <link rel="stylesheet" href="styles.css?v=20261007-ambient5" />
     <script type="importmap">
       {
         "imports": {
@@ -22,165 +22,15 @@
         }
       }
     </script>
-    <script type="module" src="assets/js/main.js?v=20261008-portfolio1"></script>
+    <script type="module" src="script.js?v=20261007-ambient5"></script>
   </head>
   <body>
-    <a class="skip-link" href="#active-view">Skip to content</a>
-
-    <div class="app" data-view="landing">
-      <div id="scene-root" class="scene" aria-hidden="true"></div>
-      <div class="ambient-grid" aria-hidden="true"></div>
-
-      <svg class="ambient-web" viewBox="0 0 1600 900" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M-80 720 C260 570 360 820 700 620 S1180 360 1680 520" />
-        <path d="M-40 250 C340 410 570 120 890 310 S1320 760 1640 600" />
-        <path d="M180 -40 C340 260 240 500 520 940" />
-      </svg>
-
-      <header class="topbar">
-        <button class="wordmark" type="button" data-route="menu" aria-label="Return to cube menu">
-          <span class="wordmark__mark" aria-hidden="true"></span>
-          <span data-bind="shortName">WP</span>
-        </button>
-
-        <nav class="nav" aria-label="Primary navigation">
-          <button type="button" data-route="about">About</button>
-          <button type="button" data-route="portfolio">Portfolio</button>
-          <button type="button" data-route="contact">Contact</button>
-          <a class="resume-link" data-resume-link hidden>Résumé</a>
-          <button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch to light theme">
-            <span aria-hidden="true">◐</span>
-          </button>
-        </nav>
-      </header>
-
-      <main id="active-view" class="views" tabindex="-1">
-        <section class="view view--landing is-active" data-view-panel="landing" aria-labelledby="landing-title">
-          <div class="landing-copy">
-            <p class="eyebrow">Interactive portfolio / <span data-bind="year"></span></p>
-            <h1 id="landing-title" class="sr-only" data-bind="name">Wepehe</h1>
-            <p class="landing-copy__instruction">Drag to rotate. Press the cube to enter.</p>
-          </div>
-          <button class="enter-cube" type="button" data-action="enter">
-            <span>Enter</span>
-            <span aria-hidden="true">↗</span>
-          </button>
-        </section>
-
-        <section class="view view--menu" data-view-panel="menu" aria-labelledby="menu-title" hidden>
-          <div class="menu-copy">
-            <p class="eyebrow">Choose a face</p>
-            <h2 id="menu-title">A portfolio<br />with depth.</h2>
-            <p>Spin the cube and select a face, or use the menu in the corner.</p>
-          </div>
-          <div class="face-key" aria-label="Cube face navigation guide">
-            <button type="button" data-route="about"><span>Top</span> About</button>
-            <button type="button" data-route="portfolio"><span>Side</span> Portfolio</button>
-            <button type="button" data-route="contact"><span>Bottom</span> Contact</button>
-          </div>
-        </section>
-
-        <section class="view view--projector" data-view-panel="about" aria-labelledby="about-title" hidden>
-          <article class="projected-panel">
-            <p class="eyebrow">01 / About me</p>
-            <h2 id="about-title" data-bind="aboutHeading"></h2>
-            <div class="about-grid">
-              <p class="lede" data-bind="aboutIntro"></p>
-              <div>
-                <p data-bind="aboutBody"></p>
-                <ul class="skill-list" data-skills></ul>
-              </div>
-            </div>
-          </article>
-        </section>
-
-        <section class="view view--portfolio" data-view-panel="portfolio" aria-labelledby="portfolio-title" hidden>
-          <div class="portfolio-shell">
-            <header class="portfolio-heading">
-              <div>
-                <p class="eyebrow">02 / Selected work</p>
-                <h2 id="portfolio-title">Cube of time</h2>
-              </div>
-              <div class="year-control" aria-label="Choose portfolio year">
-                <button type="button" data-year-previous aria-label="Previous year">←</button>
-                <div class="year-cube" data-year-cube aria-live="polite"></div>
-                <button type="button" data-year-next aria-label="Next year">→</button>
-              </div>
-            </header>
-
-            <div class="timeline" data-timeline>
-              <svg class="timeline__traces" data-timeline-traces aria-hidden="true"></svg>
-              <div class="timeline__projects" data-project-grid></div>
-            </div>
-          </div>
-        </section>
-
-        <section class="view view--projector" data-view-panel="contact" aria-labelledby="contact-title" hidden>
-          <article class="projected-panel projected-panel--contact">
-            <div>
-              <p class="eyebrow">03 / Contact me</p>
-              <h2 id="contact-title">Let’s make<br />something strange.</h2>
-              <p data-bind="contactIntro"></p>
-              <a class="text-link" data-email-link></a>
-            </div>
-
-            <form class="contact-form" data-contact-form novalidate>
-              <label>
-                <span>Name</span>
-                <input name="name" autocomplete="name" maxlength="80" required />
-              </label>
-              <label>
-                <span>Email</span>
-                <input name="email" type="email" autocomplete="email" maxlength="254" required />
-              </label>
-              <label class="contact-form__message">
-                <span>Message</span>
-                <textarea name="message" rows="4" minlength="10" maxlength="2000" required></textarea>
-              </label>
-              <label class="honeypot" aria-hidden="true">
-                <span>Website</span>
-                <input name="website" tabindex="-1" autocomplete="off" />
-              </label>
-              <div class="contact-form__footer">
-                <p data-form-status aria-live="polite"></p>
-                <button class="button" type="submit">Send message <span aria-hidden="true">↗</span></button>
-              </div>
-            </form>
-          </article>
-        </section>
-
-        <section class="view view--detail" data-view-panel="project" aria-labelledby="project-title" hidden>
-          <article class="project-detail" data-project-detail>
-            <button class="back-button" type="button" data-route="portfolio">← Timeline</button>
-            <div class="project-detail__copy">
-              <p class="eyebrow" data-project-meta></p>
-              <h2 id="project-title" data-project-title></h2>
-              <p class="lede" data-project-summary></p>
-              <p data-project-description></p>
-              <ul class="tag-list" data-project-tags></ul>
-              <a class="button button--outline" data-project-link hidden>View project ↗</a>
-            </div>
-            <div class="project-path" aria-label="Project timeline">
-              <span class="project-path__cube">Start</span>
-              <svg viewBox="0 0 600 150" preserveAspectRatio="none" aria-hidden="true">
-                <path data-project-path d="M30 80 C130 10 210 145 320 70 S490 5 570 76" />
-              </svg>
-              <span class="project-path__cube">Now</span>
-            </div>
-          </article>
-        </section>
-      </main>
-
-      <aside class="interaction-note" aria-live="polite">
-        <span class="interaction-note__dot" aria-hidden="true"></span>
-        <span data-interaction-note>Drag the cube</span>
-      </aside>
-
-      <div class="transition-layer" aria-hidden="true">
-        <span></span><span></span><span></span>
-      </div>
-
-      <noscript>This portfolio requires JavaScript for its 3D navigation.</noscript>
-    </div>
+    <main
+      class="stage"
+      tabindex="0"
+      aria-label="A slowly rotating transparent glass cube in a dark room. Drag to rotate it manually."
+    >
+      <h1 class="sr-only">Coming Soon</h1>
+    </main>
   </body>
 </html>
