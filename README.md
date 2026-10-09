@@ -36,7 +36,7 @@ The same two services run on ports `8080` and `8787`. Contact submissions are st
 | Contact form browser behavior | `assets/js/contact.js` |
 | Contact API behavior | `server/src/` |
 
-Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a guided tour of the finished code. Use [`docs/BUILD_FROM_SCRATCH.md`](docs/BUILD_FROM_SCRATCH.md) as a milestone-by-milestone curriculum with a terminal-based ChatGPT tutor.
+Read [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for a guided tour and the reasoning behind this structure.
 
 ## Personalize it
 
